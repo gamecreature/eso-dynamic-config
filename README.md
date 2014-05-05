@@ -12,8 +12,7 @@ When not in combat the quality is turned higher.
 1.  Go to the ESO documents directory at ```C:\Users\YOURUSER\Documents\Elder Scrolls Online\VERSION\``` (replace VERSION with the client you're using)
     Or use the ```/Users/YOURUSER/Documents/Elder Scrolls Online/VERSION/AddOns``` on the mac
 2.  If a folder called ``Addons`` doesn't exist, create it.
-3.  Copy the DynamicConfig.lua script and DynamicConfig.txt to this directory
-
+3.  Copy he files of this plugin in to a directory name DynamicConfig
 
 ## Configuration
 
