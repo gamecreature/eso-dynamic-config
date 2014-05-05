@@ -1,4 +1,4 @@
-## What is this about?
+## What's this about?
 
 This is a very simple plugin for The Elder Scrolls Online.
 
