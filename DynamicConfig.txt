@@ -3,3 +3,5 @@
 ## Version: 1.0
 
 DynamicConfig.lua
+README.md
+
