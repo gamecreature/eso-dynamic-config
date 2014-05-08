@@ -69,3 +69,17 @@ VIEW_DISTANCE
 
   * Build in a UI feature
   * Add a cooldown period, so it switches to high-quality after a few seconds (prevent to much switching)
+
+
+## Histoy
+
+v1.0.2 
+* Added configuration support. Settings are now changable
+* Added grass configuration support
+
+v1.0.1
+* PARTICLE_DENSITY and VIEW_DISTANCE added
+* Fixed file list so it also includes README.md
+
+v1.0 
+* First release
