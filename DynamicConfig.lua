@@ -33,28 +33,42 @@ EVENT_MANAGER:RegisterForEvent( DynamicConfig.name, EVENT_ADD_ON_LOADED, Dynamic
 --[[==========================================
 	Configure here your high quality exploring configuration
 	==========================================]]--
-
 function DynamicConfig.qualityUp()
 	SetCVar('SUB_SAMPLING',2)
 	SetCVar('AMBIENT_OCCLUSION',1)
 	SetCVar('ANTI_ALIASING_v2', 1)
 	SetCVar('BLOOM', 1)
+	SetCVar('PARTICLE_DENSITY', 3)
+	SetCVar('VIEW_DISTANCE', 2.00)
 	d("quality UP")
 end
-
 
 --[[==========================================
 	Configure here your low quality combat configuration 
 	==========================================]]--
-
 function DynamicConfig.qualityDown()
 	SetCVar('SUB_SAMPLING',0)
 	SetCVar('AMBIENT_OCCLUSION',0)
 	SetCVar('ANTI_ALIASING_v2', 0)
 	SetCVar('BLOOM', 0)
+	SetCVar('PARTICLE_DENSITY', 1)
+	SetCVar('VIEW_DISTANCE', 1.21)
 	d("quality down")
 end
 
+--[[==========================================
+	Print current settings to chat window (debugging)
+	==========================================]]--
+function DynamicConfig.qualityGet()
+	d("<-----  Current Graphics Config  ----->")
+	d("Sub Sampling: " .. GetCVar('SUB_SAMPLING'))
+	d("Ambient Occlusion: " .. GetCVar('AMBIENT_OCCLUSION'))
+	d("Anti Aliasing: " .. GetCVar('ANTI_ALIASING_v2'))
+	d("Bloom: " .. GetCVar('BLOOM'))
+	d("Particle Density: " .. GetCVar('PARTICLE_DENSITY'))
+	d("View Distance: " .. GetCVar('VIEW_DISTANCE'))
+	d("<------------------------------------->")
+end
 
 --[[==========================================
 
@@ -74,17 +88,23 @@ function DynamicConfig.SlashCommands( text )
 
 	if ( text == "" ) then
 		d( "DynamicConfig " .. DynamicConfig.versionString );
-		d( "Command line options: /dynconfig up down :);" );
+		d( "Command line options: /dynconf up down get  :);" );
 		return
 	end
 
-	
 	if ( text == "up" ) then
 		DynamicConfig.qualityUp()
 		return
 	end
+	
 	if ( text == "down" ) then
 		DynamicConfig.qualityDown()
 		return
 	end
+	
+	if ( text == "get" ) then
+		DynamicConfig.gualityGet()
+		return
+	end
+	
 end
