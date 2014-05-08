@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.0"
+DynamicConfig.versionString = "v1.0.1"
 DynamicConfig.versionSettings = 1;
 DynamicConfig.versionBuild = 0;
 
