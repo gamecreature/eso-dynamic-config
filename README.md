@@ -16,36 +16,56 @@ When not in combat the quality is turned higher.
 
 ## Configuration
 
-At the moment configuration can be done in the DynamicConfig.lua file:
+You can save the coniguration you would like to use for high and low quality via a slash-command in the chat window.
 
-The qualityUp function sets the configuration for my high quality experience. (Non-Combat)
+To configure the high quality you can configure your settings via the settings menu.
+When complete enter the follow command:
+
+```
+/dynconf save high
+```
+
+To configure the low quality you can configure your low quality settings via the settings menu.
+When complete enter the follow command:
 
 
 ```
-function DynamicConfig.qualityUp()
-    SetCVar('SUB_SAMPLING',2)
-    SetCVar('AMBIENT_OCCLUSION',1)
-    SetCVar('ANTI_ALIASING_v2', 1)
-    SetCVar('BLOOM', 1)
-    d("quality UP")
-end
+/dynconf save low
 ```
 
 
-The quality down function sets the lower quality for the combat mode 
+## Command list 
+
+Warning commands are space sensitive! (so type it exactly)
 
 ```
-function DynamicConfig.qualityDown()
-    SetCVar('SUB_SAMPLING',0)
-    SetCVar('AMBIENT_OCCLUSION',0)
-    SetCVar('ANTI_ALIASING_v2', 0)
-    SetCVar('BLOOm', 0)
-    d("quality down")
-end
+/dynconf            : shows some help
+/dynconf save high  : save high quality settings (explorer modes)
+/dynconf save low   : save low quality settings  (combat modes)
+/dynconf show high  : shows the high quality settings
+/dynconf show low   : shows the high quality settings
+/dynconf show cur   : shows the current game settings
+/dynconf high       : activates the high settings
+/dynconf low        : activates the low settings
 ```
 
+
+## Settings that are stored
+
+The following settings are stored for now.
+I'v experimented with some other setting, but there are settings that are problematic (wel at least on my Mac). 
+
+```
+SUB_SAMPLING 
+AMBIENT_OCCLUSION 
+ANTI_ALIASING_v2
+BLOOM
+PARTICLE_DENSITY
+VIEW_DISTANCE
+```
 
 
 ## Ideas
 
-Perhaps build in a UI feature so you can toggle the different combat mode settings
+  * Build in a UI feature
+  * Add a cooldown period, so it switches to high-quality after a few seconds (prevent to much switching)

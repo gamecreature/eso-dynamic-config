@@ -1,5 +1,6 @@
 ## Title: DynamicConfig
 ## APIVersion: 100003
+## SavedVariables: DynamicConfig_SavedVariables
 ## Version: 1.0.1
 
 DynamicConfig.lua
