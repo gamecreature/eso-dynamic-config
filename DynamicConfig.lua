@@ -9,9 +9,8 @@ DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
 DynamicConfig.versionString = "v1.0.3"
-DynamicConfig.versionSettings = 1
+DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
-DynamicConfig.debugCombatSwitch = false
 
 
 local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
@@ -60,7 +59,6 @@ DynamicConfig.defaultSettings = {
 	auto = true,
 	enableOutput = true,
 	debugOutput = false,
-	debugCombatSwitch = false
 }
 
 DynamicConfig.vars = DynamicConfig.defaultSettings.high
@@ -90,10 +88,9 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigActivateHighBtn", "Activate High", nil, function() DynamicConfig.Apply("high"); end)
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigActivateLowBtn", "Activate Low", nil, function() DynamicConfig.Apply("low"); end)
 
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigAutoCombatTracking", "Enable Auto Combat Tracking", nil, function() return DynamicConfig.settings.auto or true; end, function(val) DynamicConfig.settings.auto = val; end)
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableOutput", "Enable Output", nil, function() return DynamicConfig.settings.enableOutput or true; end, function(val) DynamicConfig.settings.enableOutput = val; end)
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableDebugOutput", "Enable Debugging Output", nil, function() return DynamicConfig.settings.debugOutput or true; end, function(val) DynamicConfig.settings.debugOutput = val; end)
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigDebugCombatSwitch", "Enable Debug for CombatSwitch", nil, function() return DynamicConfig.debugCombatSwitch or false; end, function(val) DynamicConfig.debugCombatSwitch = val; end)	
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigAutoCombatTracking", "Enable Auto Combat Tracking", nil, function() return DynamicConfig.settings.auto; end, function(val) DynamicConfig.settings.auto = val; end)
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableOutput", "Enable Output", nil, function() return DynamicConfig.settings.enableOutput; end, function(val) DynamicConfig.settings.enableOutput = val; end)
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableDebugOutput", "Enable Debugging Output", nil, function() return DynamicConfig.settings.debugOutput; end, function(val) DynamicConfig.settings.debugOutput = val; end)
 
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current as High", nil, function() DynamicConfig.Save("high"); end)
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current as Low", nil, function() DynamicConfig.Save("low"); end)
@@ -113,9 +110,9 @@ function DynamicConfig.CombatStateEvent( eventCode, inCombat )
 	end
 	
 	if ( inCombat == true ) then
-		DynamicConfig.Apply("low",DynamicConfig.debugCombatSwitch)
+		DynamicConfig.Apply("low")
 	else
-		DynamicConfig.Apply("high",DynamicConfig.debugCombatSwitch)
+		DynamicConfig.Apply("high")
 	end
 
 end
