@@ -15,7 +15,7 @@ DynamicConfig.debugCombatSwitch = false
 
 
 local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
-local PanelName = "|cDCDC22Dynamic Config|r Settings"
+local PanelName = "Dynamic Config Settings"
 local menus = {}
 
 DynamicConfig.defaultSettings = {
@@ -95,8 +95,8 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableDebugOutput", "Enable Debugging Output", nil, function() return DynamicConfig.settings.debugOutput or true; end, function(val) DynamicConfig.settings.debugOutput = val; end)
 	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigDebugCombatSwitch", "Enable Debug for CombatSwitch", nil, function() return DynamicConfig.debugCombatSwitch or false; end, function(val) DynamicConfig.debugCombatSwitch = val; end)	
 
-	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current config as High", nil, function() DynamicConfig.Save("high"); end)
-	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current config as Low", nil, function() DynamicConfig.Save("low"); end)
+	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current as High", nil, function() DynamicConfig.Save("high"); end)
+	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current as Low", nil, function() DynamicConfig.Save("low"); end)
 
 end
 
