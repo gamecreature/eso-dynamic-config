@@ -8,10 +8,15 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.2"
+DynamicConfig.versionString = "v1.0.3"
 DynamicConfig.versionSettings = 1
 DynamicConfig.versionBuild = 0
 DynamicConfig.debugCombatSwitch = false
+
+
+local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
+local PanelName = "|cDCDC22Dynamic Config|r Settings"
+local menus = {}
 
 DynamicConfig.defaultSettings = {
 	high = {
@@ -51,7 +56,11 @@ DynamicConfig.defaultSettings = {
 		-- DETAIL_MAPS = 0,
 		-- NORMAL_MAPS = 0,
 		-- SPECULAR_MAPS = 0
-	}
+	},
+	auto = true,
+	enableOutput = true,
+	debugOutput = false,
+	debugCombatSwitch = false
 }
 
 DynamicConfig.vars = DynamicConfig.defaultSettings.high
@@ -74,15 +83,34 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 
 	DynamicConfig.settings = ZO_SavedVars:NewAccountWide( "DynamicConfig_SavedVariables" , DynamicConfig.versionSettings, nil, DynamicConfig.defaultSettings, nil );
 
+	menus[PanelName] = { Key = PanelName.."Panel", Name = PanelName}
+	menus[PanelName].ID = LAM:CreateControlPanel(menus[PanelName].Key, menus[PanelName].Name)
+	LAM:AddHeader(menus[PanelName].ID, "DynamicConfigHeader", "Dynamic Config Settings")
+
+	LAM:AddButton(menus[PanelName].ID, "DynamicConfigActivateHighBtn", "Activate High", nil, function() DynamicConfig.Apply("high"); end)
+	LAM:AddButton(menus[PanelName].ID, "DynamicConfigActivateLowBtn", "Activate Low", nil, function() DynamicConfig.Apply("low"); end)
+
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigAutoCombatTracking", "Enable Auto Combat Tracking", nil, function() return DynamicConfig.settings.auto or true; end, function(val) DynamicConfig.settings.auto = val; end)
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableOutput", "Enable Output", nil, function() return DynamicConfig.settings.enableOutput or true; end, function(val) DynamicConfig.settings.enableOutput = val; end)
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableDebugOutput", "Enable Debugging Output", nil, function() return DynamicConfig.settings.debugOutput or true; end, function(val) DynamicConfig.settings.debugOutput = val; end)
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigDebugCombatSwitch", "Enable Debug for CombatSwitch", nil, function() return DynamicConfig.debugCombatSwitch or false; end, function(val) DynamicConfig.debugCombatSwitch = val; end)	
+
+	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current config as High", nil, function() DynamicConfig.Save("high"); end)
+	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current config as Low", nil, function() DynamicConfig.Save("low"); end)
+
 end
 
 -- Hook initialization onto the ADD_ON_LOADED event
 EVENT_MANAGER:RegisterForEvent( DynamicConfig.name, EVENT_ADD_ON_LOADED, DynamicConfig.Initialize )
 
+
 --[[==========================================
 	Combat event listener
 	==========================================]]--
 function DynamicConfig.CombatStateEvent( eventCode, inCombat )
+	if not DynamicConfig.settings.auto then
+		return
+	end
 	
 	if ( inCombat == true ) then
 		DynamicConfig.Apply("low",DynamicConfig.debugCombatSwitch)
@@ -97,12 +125,16 @@ end
 	Save the current variables
 	==========================================]]--
 function DynamicConfig.Save( mode ) 
-	d("Save configuration "..mode)
-	d("---------------------------")
+	if DynamicConfig.settings.debugOutput then
+		d("Save configuration "..mode)
+		d("---------------------------")
+	end
 	for name, v in pairs(DynamicConfig.vars) do
-		val = GetCVar(name)
+		local val = GetCVar(name)
 		DynamicConfig.settings[mode][name] = val
-		d("-"..name.."="..val)
+		if DynamicConfig.settings.debugOutput then
+			d("-"..name.."="..val)
+		end
 	end	
 end
 
@@ -110,13 +142,13 @@ end
 --[[==========================================
 	Applies the variables
 	==========================================]]--
-function DynamicConfig.Apply( mode, loud ) 
-	if loud then d("Apply configuration "..mode )	end
-	-- if loud then d("--------------------------------") end
+function DynamicConfig.Apply(mode) 
+	if DynamicConfig.settings.enableOutput then 
+		CHAT_SYSTEM:AddMessage("Apply configuration "..mode )
+	end
 	for name, v in pairs(DynamicConfig.vars) do
-		value = DynamicConfig.settings[mode][name]
+		local value = DynamicConfig.settings[mode][name]
 		if( value ) then
-			-- if loud then d("-"..name.."="..value) end
 			SetCVar(name,value)
 		end
 	end	
@@ -125,13 +157,13 @@ end
 --[[==========================================
 	Show the configuration
 	==========================================]]--
-function DynamicConfig.Show( mode ) 
-	d("Show configuration "..mode)	
-	d("---------------------------")
+function DynamicConfig.Show(mode)
+	CHAT_SYSTEM:AddMessage("Show configuration "..mode)	
+	CHAT_SYSTEM:AddMessage("---------------------------")
 	for name, v in pairs(DynamicConfig.vars) do
-		value = DynamicConfig.settings[mode][name]
+		local value = DynamicConfig.settings[mode][name]
 		if( value ) then
-			d("-"..name.."="..value)
+			CHAT_SYSTEM:AddMessage("-"..name.."="..value)
 		end
 	end	
 end
@@ -141,19 +173,10 @@ end
 	Print current settings to chat window (debugging)
 	==========================================]]--
 function DynamicConfig.showCur()
-	-- d("<-----  Current Graphics Config  ----->")
-	-- d("Sub Sampling: " .. GetCVar('SUB_SAMPLING'))
-	-- d("Ambient Occlusion: " .. GetCVar('AMBIENT_OCCLUSION'))
-	-- d("Anti Aliasing: " .. GetCVar('ANTI_ALIASING_v2'))
-	-- d("Bloom: " .. GetCVar('BLOOM'))
-	-- d("Particle Density: " .. GetCVar('PARTICLE_DENSITY'))
-	-- d("View Distance: " .. GetCVar('VIEW_DISTANCE'))
-	-- d("<------------------------------------->")
-
-	d("Current Graphics Config")
-	d("-----------------------")
+	CHAT_SYSTEM:AddMessage("Current Graphics Config")
+	CHAT_SYSTEM:AddMessage("-----------------------")
 	for name, v in pairs(DynamicConfig.vars) do
-		d( "-"..name .. " = " .. GetCVar(name) )
+		CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. GetCVar(name) )
 	end	
 end
 
@@ -161,8 +184,8 @@ end
 	Shows all settings
 	==========================================]]--
 function DynamicConfig.ShowAll()
-	d("All stored configurations")	
-	d("=========================")
+	CHAT_SYSTEM:AddMessage("All stored configurations")	
+	CHAT_SYSTEM:AddMessage("=========================")
 	DynamicConfig.Show( "high" )
 	DynamicConfig.Show( "low" )
 end
@@ -171,26 +194,26 @@ end
 function DynamicConfig.SlashCommands( text )
 
 	if ( text == "" ) then
-		d( "DynamicConfig " .. DynamicConfig.versionString )
-		d( "Command line options: /dynconf [command] " )
-		d( "/dynconf save high  (save the current settings as high quality settings)" )
-		d( "/dynconf save low   (save the current settings as low quality settings)" )
-		d( "/dynconf show high  (shows the high settings)" )
-		d( "/dynconf show low   (shows the low settings)" )
-		d( "/dynconf show cur   (shows the current settings)" )
-		d( "/dynconf show       (shows all settings)" )
-		d( "/dynconf up         " )
-		d( "/dynconf down " )
+		CHAT_SYSTEM:AddMessage( "DynamicConfig " .. DynamicConfig.versionString )
+		CHAT_SYSTEM:AddMessage( "Command line options: /dynconf [command] " )		
+		CHAT_SYSTEM:AddMessage( "/dynconf save high  (save the current settings as high quality settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf save low   (save the current settings as low quality settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show high  (shows the high settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show low   (shows the low settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show cur   (shows the current settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show       (shows all settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf up         " )
+		CHAT_SYSTEM:AddMessage( "/dynconf down " )
 		return
 	end
 
 	if ( text == "up" or text == "high") then
-		DynamicConfig.Apply("high",true)
+		DynamicConfig.Apply("high")
 		return
 	end
 	
 	if ( text == "down" or text == "low" ) then
-		DynamicConfig.Apply("low",true)
+		DynamicConfig.Apply("low")
 		return
 	end
 
@@ -223,16 +246,6 @@ function DynamicConfig.SlashCommands( text )
 	if ( text == "show" ) then
 		DynamicConfig.ShowAll()
 		return
-	end
-
-	if( text == "debug" ) then
-		if ( DynamicConfig.debugCombatSwitch ) then 
-			DynamicConfig.debugCombatSwitch = false
-			d( "Config switch messages are disabled")
-		else
-			DynamicConfig.debugCombatSwitch = true
-			d( "Config switch messages are enabled")
-		end
 	end
 
 end

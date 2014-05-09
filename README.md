@@ -73,6 +73,9 @@ VIEW_DISTANCE
 
 ## Histoy
 
+v1.0.3
+* Added DynamicConfig UI Settings (Thanks [Swizzy](https://github.com/Swizzy)!)
+
 v1.0.2 
 * Added configuration support. Settings are now changable
 * Added grass configuration support

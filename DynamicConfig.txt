@@ -1,8 +1,10 @@
 ## Title: DynamicConfig
 ## APIVersion: 100003
 ## SavedVariables: DynamicConfig_SavedVariables
-## Version: 1.0.2
+## Version: 1.0.3
+## OptionalDependsOn: LibAddonMenu-1.0
+
+LibStub/LibStub.lua
+LibAddonMenu-1.0/LibAddonMenu-1.0.lua
 
 DynamicConfig.lua
-README.md
-
