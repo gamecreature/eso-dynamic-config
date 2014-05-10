@@ -73,6 +73,9 @@ VIEW_DISTANCE
 
 ## Histoy
 
+v1.0.4
+* Added Keybindings (Thanks to [SkOODaT](http://www.esoui.com/forums/member.php?userid=1305)!)
+
 v1.0.3
 * Added DynamicConfig UI Settings (Thanks [Swizzy](https://github.com/Swizzy)!)
 
