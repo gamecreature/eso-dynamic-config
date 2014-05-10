@@ -8,14 +8,15 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.5"
+DynamicConfig.versionString = "v1.0.6"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 
-
+--[[
 local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
 local PanelName = "Dynamic Config Settings"
 local menus = {}
+]]--
 
 ZO_CreateStringId("SI_BINDING_NAME_DYN_UP", "DYN UP")
 ZO_CreateStringId("SI_BINDING_NAME_DYN_DOWN", "DYN DOWN")
@@ -62,57 +63,7 @@ DynamicConfig.defaultSettings = {
 	auto = true,
 	enableOutput = true,
 	debugOutput = false,
-	AdditionalVars = false,
 }
-
-function DynamicConfig.SetDynamicVars()
-	if not DynamicConfig.settings.AdditionalVars then
-		DynamicConfig.vars = {
-			SUB_SAMPLING = 2,
-			AMBIENT_OCCLUSION = 1,
-			ANTI_ALIASING_v2 = 1,
-			BLOOM = 1,
-			PARTICLE_DENSITY = 2,
-			VIEW_DISTANCE = 1.0,
-			CLUTTER_2D = 1		-- This is grass :)
-			-- SHADOWS = 1,
-			-- HIGH_RESOLUTION_SHADOWS = 1,
-			-- REFLECTION_QUALITY_v3 = 1,
-			-- LENS_FLARE = 1,
-			-- GOD_RAYS_v2 = 1,
-			-- MAX_ANISOTROPY = 2
-			-- DIFFUSE_2_MAPS = 1,
-			-- DETAIL_MAPS = 1,
-			-- NORMAL_MAPS = 1,
-			-- SPECULAR_MAPS=  1
-		}
-	else
-		DynamicConfig.vars = {
-			SUB_SAMPLING = 2,
-			AMBIENT_OCCLUSION = 1,
-			ANTI_ALIASING_v2 = 1,
-			BLOOM = 1,
-			PARTICLE_DENSITY = 2,
-			VIEW_DISTANCE = 1.0,
-			CLUTTER_2D = 1,		-- This is grass :)
-			-- SHADOWS = 1,
-			-- HIGH_RESOLUTION_SHADOWS = 1,
-			-- REFLECTION_QUALITY_v3 = 1,
-			-- LENS_FLARE = 1,
-			GOD_RAYS_v2 = 1,
-			MAX_ANISOTROPY = 2,
-			-- DIFFUSE_2_MAPS = 1,
-			-- DETAIL_MAPS = 1,
-			-- NORMAL_MAPS = 1,
-			SPECULAR_MAPS =  1,
-			DISTORTION = 1,
-			WATER_FOAM = 1,
-			MIP_LOAD_SKIP_LEVELS = 0,
-			RAIN_WETNESS = 1,
-			
-		}
-	end
-end
 
 --[[==========================================
 	Initialize
@@ -129,11 +80,9 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	
 	DynamicConfig.settings = ZO_SavedVars:NewAccountWide( "DynamicConfig_SavedVariables" , DynamicConfig.versionSettings, nil, DynamicConfig.defaultSettings, nil );
 	
-	if DynamicConfig.settings.AdditionalVars == nil then
-		DynamicConfig.settings.AdditionalVars = false
-	end
-	DynamicConfig.SetDynamicVars()	
+	DynamicConfig.SetupSettingsMenu()
 
+	--[[
 	menus[PanelName] = { Key = PanelName.."Panel", Name = PanelName}
 	menus[PanelName].ID = LAM:CreateControlPanel(menus[PanelName].Key, menus[PanelName].Name)
 	LAM:AddHeader(menus[PanelName].ID, "DynamicConfigHeader", "Dynamic Config Settings")
@@ -148,7 +97,7 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current as High", nil, function() DynamicConfig.Save("high"); end)
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current as Low", nil, function() DynamicConfig.Save("low"); end)
-
+	]]--
 end
 
 -- Hook initialization onto the ADD_ON_LOADED event
@@ -180,11 +129,13 @@ function DynamicConfig.Save( mode )
 		d("Save configuration "..mode)
 		d("---------------------------")
 	end
-	for name, v in pairs(DynamicConfig.vars) do
-		local val = GetCVar(name)
-		DynamicConfig.settings[mode][name] = val
-		if DynamicConfig.settings.debugOutput then
-			d("-"..name.."="..val)
+	for name, v in pairs(DynamicConfig.settings.vars) do
+		if v then
+			local val = GetCVar(name)
+			DynamicConfig.settings[mode][name] = val
+			if DynamicConfig.settings.debugOutput then
+				d("-"..name.."="..val)
+			end
 		end
 	end	
 end
@@ -197,10 +148,12 @@ function DynamicConfig.Apply(mode)
 	if DynamicConfig.settings.enableOutput then 
 		CHAT_SYSTEM:AddMessage("Apply configuration "..mode )
 	end
-	for name, v in pairs(DynamicConfig.vars) do
-		local value = DynamicConfig.settings[mode][name]
-		if( value ) then
-			SetCVar(name,value)
+	for name, v in pairs(DynamicConfig.settings.vars) do
+		if v then
+			local val = DynamicConfig.settings[mode][name]
+			if (val) then
+				SetCVar(name , val)
+			end
 		end
 	end	
 end
@@ -212,9 +165,11 @@ function DynamicConfig.Show(mode)
 	CHAT_SYSTEM:AddMessage("Show configuration "..mode)	
 	CHAT_SYSTEM:AddMessage("---------------------------")
 	for name, v in pairs(DynamicConfig.vars) do
-		local value = DynamicConfig.settings[mode][name]
-		if( value ) then
-			CHAT_SYSTEM:AddMessage("-"..name.."="..value)
+		if v then
+			local val = DynamicConfig.settings[mode][name]
+			if (val) then
+				CHAT_SYSTEM:AddMessage("-"..name.."="..val)
+			end
 		end
 	end	
 end
@@ -227,7 +182,9 @@ function DynamicConfig.showCur()
 	CHAT_SYSTEM:AddMessage("Current Graphics Config")
 	CHAT_SYSTEM:AddMessage("-----------------------")
 	for name, v in pairs(DynamicConfig.vars) do
-		CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. GetCVar(name) )
+		if v then
+			CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. GetCVar(name) )
+		end
 	end	
 end
 
