@@ -1,0 +1,12 @@
+<Bindings>
+	<Layer name="General">
+		<Category name="DYNConfig">
+			<Action name="DYN_UP">
+				<Down>DYNUP()</Down>
+			</Action>
+			<Action name="DYN_DOWN">
+				<Down>DYNDOWN()</Down>
+			</Action>
+		</Category>
+	</Layer>
+</Bindings>

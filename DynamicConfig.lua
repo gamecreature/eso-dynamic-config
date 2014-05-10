@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.3"
+DynamicConfig.versionString = "v1.0.4"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 
@@ -16,6 +16,9 @@ DynamicConfig.versionBuild = 0
 local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
 local PanelName = "Dynamic Config Settings"
 local menus = {}
+
+ZO_CreateStringId("SI_BINDING_NAME_DYN_UP", "DYN UP")
+ZO_CreateStringId("SI_BINDING_NAME_DYN_DOWN", "DYN DOWN")
 
 DynamicConfig.defaultSettings = {
 	high = {
@@ -245,4 +248,12 @@ function DynamicConfig.SlashCommands( text )
 		return
 	end
 
+end
+
+function DYNUP()
+    DynamicConfig.Apply("high")
+end
+
+function DYNDOWN()
+    DynamicConfig.Apply("low")
 end
