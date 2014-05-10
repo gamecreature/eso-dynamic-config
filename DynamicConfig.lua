@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.4"
+DynamicConfig.versionString = "v1.0.5"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 
@@ -62,11 +62,57 @@ DynamicConfig.defaultSettings = {
 	auto = true,
 	enableOutput = true,
 	debugOutput = false,
+	AdditionalVars = false,
 }
 
-DynamicConfig.vars = DynamicConfig.defaultSettings.high
-
-
+function DynamicConfig.SetDynamicVars()
+	if not DynamicConfig.settings.AdditionalVars then
+		DynamicConfig.vars = {
+			SUB_SAMPLING = 2,
+			AMBIENT_OCCLUSION = 1,
+			ANTI_ALIASING_v2 = 1,
+			BLOOM = 1,
+			PARTICLE_DENSITY = 2,
+			VIEW_DISTANCE = 1.0,
+			CLUTTER_2D = 1		-- This is grass :)
+			-- SHADOWS = 1,
+			-- HIGH_RESOLUTION_SHADOWS = 1,
+			-- REFLECTION_QUALITY_v3 = 1,
+			-- LENS_FLARE = 1,
+			-- GOD_RAYS_v2 = 1,
+			-- MAX_ANISOTROPY = 2
+			-- DIFFUSE_2_MAPS = 1,
+			-- DETAIL_MAPS = 1,
+			-- NORMAL_MAPS = 1,
+			-- SPECULAR_MAPS=  1
+		}
+	else
+		DynamicConfig.vars = {
+			SUB_SAMPLING = 2,
+			AMBIENT_OCCLUSION = 1,
+			ANTI_ALIASING_v2 = 1,
+			BLOOM = 1,
+			PARTICLE_DENSITY = 2,
+			VIEW_DISTANCE = 1.0,
+			CLUTTER_2D = 1,		-- This is grass :)
+			-- SHADOWS = 1,
+			-- HIGH_RESOLUTION_SHADOWS = 1,
+			-- REFLECTION_QUALITY_v3 = 1,
+			-- LENS_FLARE = 1,
+			GOD_RAYS_v2 = 1,
+			MAX_ANISOTROPY = 2,
+			-- DIFFUSE_2_MAPS = 1,
+			-- DETAIL_MAPS = 1,
+			-- NORMAL_MAPS = 1,
+			SPECULAR_MAPS =  1,
+			DISTORTION = 1,
+			WATER_FOAM = 1,
+			MIP_LOAD_SKIP_LEVELS = 0,
+			RAIN_WETNESS = 1,
+			
+		}
+	end
+end
 
 --[[==========================================
 	Initialize
@@ -80,9 +126,13 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	
 	EVENT_MANAGER:RegisterForEvent( DynamicConfig.name, EVENT_PLAYER_COMBAT_STATE, DynamicConfig.CombatStateEvent );	
 	SLASH_COMMANDS[DynamicConfig.command] = DynamicConfig.SlashCommands;
-
-
+	
 	DynamicConfig.settings = ZO_SavedVars:NewAccountWide( "DynamicConfig_SavedVariables" , DynamicConfig.versionSettings, nil, DynamicConfig.defaultSettings, nil );
+	
+	if DynamicConfig.settings.AdditionalVars == nil then
+		DynamicConfig.settings.AdditionalVars = false
+	end
+	DynamicConfig.SetDynamicVars()	
 
 	menus[PanelName] = { Key = PanelName.."Panel", Name = PanelName}
 	menus[PanelName].ID = LAM:CreateControlPanel(menus[PanelName].Key, menus[PanelName].Name)
@@ -94,6 +144,7 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigAutoCombatTracking", "Enable Auto Combat Tracking", nil, function() return DynamicConfig.settings.auto; end, function(val) DynamicConfig.settings.auto = val; end)
 	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableOutput", "Enable Output", nil, function() return DynamicConfig.settings.enableOutput; end, function(val) DynamicConfig.settings.enableOutput = val; end)
 	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableDebugOutput", "Enable Debugging Output", nil, function() return DynamicConfig.settings.debugOutput; end, function(val) DynamicConfig.settings.debugOutput = val; end)
+	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableAdditionalVarsBox", "Enable Additional Variables", nil, function() return DynamicConfig.settings.AdditionalVars; end, function(val) DynamicConfig.settings.AdditionalVars = val; DynamicConfig.SetDynamicVars(); end)
 
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current as High", nil, function() DynamicConfig.Save("high"); end)
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current as Low", nil, function() DynamicConfig.Save("low"); end)

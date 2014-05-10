@@ -73,6 +73,9 @@ VIEW_DISTANCE
 
 ## Histoy
 
+v1.0.5
+* Added some additional variables (as an option) per request by [SektaNZ](http://www.esoui.com/forums/member.php?u=5291)
+
 v1.0.4
 * Added Keybindings (Thanks to [SkOODaT](http://www.esoui.com/forums/member.php?userid=1305)!)
 
