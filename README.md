@@ -64,6 +64,20 @@ PARTICLE_DENSITY
 VIEW_DISTANCE
 ```
 
+## Additional Settings (can be activated)
+
+The following additional settings can be stored using the setting for that:
+
+```
+GOD_RAYS_v2
+MAX_ANISOTROPY
+SPECULAR_MAPS
+DISTORTION
+WATER_FOAM
+MIP_LOAD_SKIP_LEVELS
+RAIN_WETNESS
+```
+
 
 ## Ideas
 
