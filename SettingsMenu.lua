@@ -34,6 +34,15 @@ function DynamicConfig.SetupSettingsMenu()
 	end) -- Enable Debug output
 	--LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableAdditionalVarsBox", "Enable Additional Variables", nil, function() return DynamicConfig.settings.AdditionalVars; end, function(val) DynamicConfig.settings.AdditionalVars = val; DynamicConfig.SetDynamicVars(); end)
 	
+
+	LAM:AddSlider(menus[PanelName].ID, "DynamicConfigSwitchBackTime", "Switchback Timeout", "How long to wait (in ms) before switing back to high", 0, 10000, 250, function()
+		return DynamicConfig.settings.switchBackTime
+	end, function(val)
+		DynamicConfig.settings.switchBackTime = val
+	end)
+		
+
+
 	menus[PanelName].SubID = LAM:AddSubMenu(menus[PanelName].ID, "DynamicConfigSubMenu", "Choose Variables to modify", "Only change these if you know what you're doing!") -- Add Submenu for the advanced users to set what variables to modify
 	
 	if DynamicConfig.settings.vars == nil then

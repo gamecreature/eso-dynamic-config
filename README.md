@@ -97,6 +97,9 @@ RAIN_WETNESS
 
 ## Histoy
 
+v1.0.7
+* Added an option to configure the cooldownperiod and reduce the number of graphic quality switches
+
 v1.0.6
 * Added settings for each variable (you can now toggle exactly which variables you want the addon to change for you)
 

@@ -8,9 +8,13 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.6"
+DynamicConfig.versionString = "v1.0.7"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
+DynamicConfig.highCallCount = 0
+DynamicConfig.currentMode = "high"
+DynamicConfig.combatState = false
+
 
 --[[
 local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
@@ -63,6 +67,7 @@ DynamicConfig.defaultSettings = {
 	auto = true,
 	enableOutput = true,
 	debugOutput = false,
+	switchBackTime = 2000    -- wait two seconds to switch back
 }
 
 --[[==========================================
@@ -114,12 +119,31 @@ function DynamicConfig.CombatStateEvent( eventCode, inCombat )
 	
 	if ( inCombat == true ) then
 		DynamicConfig.Apply("low")
+		DynamicConfig.isHigh = false
+		DynamicConfig.combatState = true
 	else
-		DynamicConfig.Apply("high")
+		DynamicConfig.combatState  = false		
+		DynamicConfig.highCallCount = DynamicConfig.highCallCount + 1
+		if DynamicConfig.settings.debugOutput then
+			d("shedule high.."..DynamicConfig.highCallCount .. "("..DynamicConfig.settings.switchBackTime.."ms)")
+		end
+		zo_callLater( DynamicConfig.ApplyHigh, DynamicConfig.settings.switchBackTime )
 	end
 
 end
 
+--[[==========================================
+	Applies the high item
+	==========================================]]--
+function DynamicConfig.ApplyHigh()
+	if DynamicConfig.settings.debugOutput then
+		d("high call "..DynamicConfig.highCallCounWt)
+	end
+	DynamicConfig.highCallCount = DynamicConfig.highCallCount - 1
+	if DynamicConfig.highCallCount == 0 and not DynamicConfig.combatState then
+		DynamicConfig.Apply("high")
+	end
+end
 
 --[[==========================================
 	Save the current variables
@@ -145,6 +169,12 @@ end
 	Applies the variables
 	==========================================]]--
 function DynamicConfig.Apply(mode) 
+	if DynamicConfig.currentMode == mode then
+		return
+	end
+	DynamicConfig.currentMode = mode
+
+
 	if DynamicConfig.settings.enableOutput then 
 		CHAT_SYSTEM:AddMessage("Apply configuration "..mode )
 	end
