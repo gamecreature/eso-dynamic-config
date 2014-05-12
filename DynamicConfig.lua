@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.8"
+DynamicConfig.versionString = "v1.0.9"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 DynamicConfig.highCallCount = 0
@@ -242,7 +242,7 @@ end
 function DynamicConfig.Show(mode)
 	CHAT_SYSTEM:AddMessage("Show configuration "..mode)	
 	CHAT_SYSTEM:AddMessage("---------------------------")
-	for name, v in pairs(DynamicConfig.vars) do
+	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
 			local val = DynamicConfig.settings[mode][name]			
 			if (val) then
@@ -259,7 +259,7 @@ end
 function DynamicConfig.showCur()
 	CHAT_SYSTEM:AddMessage("Current Graphics Config")
 	CHAT_SYSTEM:AddMessage("-----------------------")
-	for name, v in pairs(DynamicConfig.vars) do
+	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
 			local val = GetSetting(5, DynamicConfig.Constants[name])
 			if (val ~= nil) then
