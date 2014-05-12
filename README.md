@@ -90,15 +90,10 @@ RAIN_WETNESS
 ```
 
 
-## Ideas
-
-  * Add a cooldown period, so it switches to high-quality after a few seconds (after leaving combat) (prevent to much switching)
-
-
 ## Histoy
 
 v1.0.7
-* Added an option to configure the cooldownperiod and reduce the number of graphic quality switches
+* Added an option to configure the cooldown period and reduce the number of graphic quality switches
 
 v1.0.6
 * Added settings for each variable (you can now toggle exactly which variables you want the addon to change for you)
