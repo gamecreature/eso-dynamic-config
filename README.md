@@ -92,6 +92,14 @@ RAIN_WETNESS
 
 ## Histoy
 
+v1.0.9
+* Fixed a crash for new users when wanting to show current settings
+
+v1.0.8
+* Moved from cVar editing to SetSetting instead - Fixes the SUB_SAMPLING issues (it's now beeing applied directly, meaning bigger difference!)
+* Under the hood: The Settings menu is now more dynamic (for variable's to modify)
+* Added Override when doing manual shifting of the configuration (it'll always change no matter what mode was set previously, when having the automatic one it'll not change if it's already set to high/low)
+
 v1.0.7
 * Added an option to configure the cooldown period and reduce the number of graphic quality switches
 

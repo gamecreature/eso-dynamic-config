@@ -8,19 +8,78 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.7"
+DynamicConfig.versionString = "v1.0.9"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 DynamicConfig.highCallCount = 0
 DynamicConfig.currentMode = "high"
 DynamicConfig.combatState = false
-
-
---[[
-local LAM = LibStub:GetLibrary("LibAddonMenu-1.0")
-local PanelName = "Dynamic Config Settings"
-local menus = {}
-]]--
+DynamicConfig.Constants = {
+	ALPHA = 12, -- Should probably never be used
+	AMBIENT_OCCLUSION = 33,
+    ANAGLYPH = 38, -- No idea what it's for
+	ANTI_ALIASING_v2 = 34, -- Not sure if this is correct!
+	--ANTI_ALIASING = 34, -- probably a duplicate of the above?
+	BLOOM = 24,
+	CHARACTER_LIGHTING = 10,
+	CLUTTER_2D = 46, -- This is grass
+	COLOR_CORRECTION = 28,
+	COLOR_GRADING = 60,
+	COLOR_PICKER = 39,
+	CUBE_LIGHTING = 8,
+	DEPTH_OF_FIELD = 23,
+	DETAIL_MAPS = 5,
+	DIFFUSE_2_MAPS = 6,
+	DIFFUSE_MAPS = 2,
+	DISTORTION = 22,
+	DQ_SKINNING = 36,
+	DRAW_BAD_FIXTURES = 18,
+	FADER = 29,
+	FOG = 40,
+	FRESNEL = 7,
+	FULLSCREEN = 26, -- This one is most likely useless seeing as it'll  require a reload, and why would you want to change this while in combat?!
+	GAMMA_ADJUSTMENT = 58, -- Probably pointless
+	GLOW = 13,
+	GOD_RAYS_v2 = 35,
+	--GOD_RAYS = 35, -- Probably a duplicate of the above?
+	GRAPHICS_DEBUG_VIEW = 31,
+	GRAY_DIFFUSE = 15,
+	HIGH_RESOLUTION_SHADOWS = 53,
+	LENS_FLARE = 41,
+	MAX_ANISOTROPY = 30,
+	MIP_LOAD_SKIP_LEVELS = 19,
+	NO_CHARACTER_ATLAS = 51,
+	NORMAL_MAPS = 4,
+	OCCLUSION_QUERIES = 21,
+	PARTICLE_DENSITY = 48,
+	POINT_SAMPLING = 56,
+	POST_PROCESS_PANELS = 32,
+	PRESETS = 25, -- probably useless?
+	RAIN_WETNESS = 42,
+	REFLECTION_QUALITY_v3 = 37,	
+	--REFLECTION_QUALITY = 37, -- Probably a duplicate of the above?
+	RESOLUTION = 49, -- Probably pointless, why would you want to change the resolution while in combat?! this also probably requires a reload...
+	SCREEN_PERCENTAGE = 43, -- probably useless
+	SHADOWS = 0,
+	SHOW_ART_METRICS = 17,
+	SIMPLE_SHADERS = 44,
+	SKINNING = 14,
+	SOFT_ALPHA = 59,
+	SPECULAR_MAPS =  3,
+	SUB_SAMPLING = 45,
+	SUN_LIGHTING = 9,
+	TEXTURE_POOLING = 52,
+	TINT_MAPS = 57,
+	VERTEX_COLORS = 11,
+	VIEW_DISTANCE = 1,
+	VIEW_SHADER_CHANNEL = 47,
+	VSYNC = 27,
+	WATER_FOAM = 16,
+	WATERMARK = 54,
+	WEAPONS_IN_ATLAS = 55,
+	WIREFRAME = 20,
+	Z_PREPASS = 50,
+}
 
 ZO_CreateStringId("SI_BINDING_NAME_DYN_UP", "DYN UP")
 ZO_CreateStringId("SI_BINDING_NAME_DYN_DOWN", "DYN DOWN")
@@ -86,23 +145,6 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	DynamicConfig.settings = ZO_SavedVars:NewAccountWide( "DynamicConfig_SavedVariables" , DynamicConfig.versionSettings, nil, DynamicConfig.defaultSettings, nil );
 	
 	DynamicConfig.SetupSettingsMenu()
-
-	--[[
-	menus[PanelName] = { Key = PanelName.."Panel", Name = PanelName}
-	menus[PanelName].ID = LAM:CreateControlPanel(menus[PanelName].Key, menus[PanelName].Name)
-	LAM:AddHeader(menus[PanelName].ID, "DynamicConfigHeader", "Dynamic Config Settings")
-
-	LAM:AddButton(menus[PanelName].ID, "DynamicConfigActivateHighBtn", "Activate High", nil, function() DynamicConfig.Apply("high"); end)
-	LAM:AddButton(menus[PanelName].ID, "DynamicConfigActivateLowBtn", "Activate Low", nil, function() DynamicConfig.Apply("low"); end)
-
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigAutoCombatTracking", "Enable Auto Combat Tracking", nil, function() return DynamicConfig.settings.auto; end, function(val) DynamicConfig.settings.auto = val; end)
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableOutput", "Enable Output", nil, function() return DynamicConfig.settings.enableOutput; end, function(val) DynamicConfig.settings.enableOutput = val; end)
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableDebugOutput", "Enable Debugging Output", nil, function() return DynamicConfig.settings.debugOutput; end, function(val) DynamicConfig.settings.debugOutput = val; end)
-	LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableAdditionalVarsBox", "Enable Additional Variables", nil, function() return DynamicConfig.settings.AdditionalVars; end, function(val) DynamicConfig.settings.AdditionalVars = val; DynamicConfig.SetDynamicVars(); end)
-
-	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current as High", nil, function() DynamicConfig.Save("high"); end)
-	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveLowBtn", "Save current as Low", nil, function() DynamicConfig.Save("low"); end)
-	]]--
 end
 
 -- Hook initialization onto the ADD_ON_LOADED event
@@ -155,7 +197,8 @@ function DynamicConfig.Save( mode )
 	end
 	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
-			local val = GetCVar(name)
+			--local val = GetCVar(name)
+			local val = GetSetting(5, DynamicConfig.Constants[name])
 			DynamicConfig.settings[mode][name] = val
 			if DynamicConfig.settings.debugOutput then
 				d("-"..name.."="..val)
@@ -168,9 +211,11 @@ end
 --[[==========================================
 	Applies the variables
 	==========================================]]--
-function DynamicConfig.Apply(mode) 
-	if DynamicConfig.currentMode == mode then
-		return
+function DynamicConfig.Apply(mode, override)
+	if override == nil or override == false then
+		if DynamicConfig.currentMode == mode then
+			return
+		end
 	end
 	DynamicConfig.currentMode = mode
 
@@ -180,12 +225,15 @@ function DynamicConfig.Apply(mode)
 	end
 	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
-			local val = DynamicConfig.settings[mode][name]
-			if (val) then
-				SetCVar(name , val)
+			local val = DynamicConfig.settings[mode][name]			
+			if val ~= nil then
+				--SetCVar(name , val)
+				SetSetting(5, DynamicConfig.Constants[name], val)
 			end
 		end
-	end	
+	end
+	RefreshSettings()
+	ApplySettings()
 end
 
 --[[==========================================
@@ -194,9 +242,9 @@ end
 function DynamicConfig.Show(mode)
 	CHAT_SYSTEM:AddMessage("Show configuration "..mode)	
 	CHAT_SYSTEM:AddMessage("---------------------------")
-	for name, v in pairs(DynamicConfig.vars) do
+	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
-			local val = DynamicConfig.settings[mode][name]
+			local val = DynamicConfig.settings[mode][name]			
 			if (val) then
 				CHAT_SYSTEM:AddMessage("-"..name.."="..val)
 			end
@@ -211,9 +259,12 @@ end
 function DynamicConfig.showCur()
 	CHAT_SYSTEM:AddMessage("Current Graphics Config")
 	CHAT_SYSTEM:AddMessage("-----------------------")
-	for name, v in pairs(DynamicConfig.vars) do
+	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
-			CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. GetCVar(name) )
+			local val = GetSetting(5, DynamicConfig.Constants[name])
+			if (val ~= nil) then
+				CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. val )
+			end
 		end
 	end	
 end
@@ -224,8 +275,8 @@ end
 function DynamicConfig.ShowAll()
 	CHAT_SYSTEM:AddMessage("All stored configurations")	
 	CHAT_SYSTEM:AddMessage("=========================")
-	DynamicConfig.Show( "high" )
-	DynamicConfig.Show( "low" )
+	DynamicConfig.Show("high")
+	DynamicConfig.Show("low")
 end
 
 
@@ -246,33 +297,32 @@ function DynamicConfig.SlashCommands( text )
 	end
 
 	if ( text == "up" or text == "high") then
-		DynamicConfig.Apply("high")
+		DynamicConfig.Apply("high", true)
 		return
 	end
 	
 	if ( text == "down" or text == "low" ) then
-		DynamicConfig.Apply("low")
+		DynamicConfig.Apply("low", true)
 		return
 	end
 
 	if ( text == "save high" ) then
-		DynamicConfig.Save( "high" ) 	
+		DynamicConfig.Save("high") 	
 		return
 	end
 
 	if ( text == "save low" ) then
-		DynamicConfig.Save( "low" )
+		DynamicConfig.Save("low")
 		return
 	end
 
-
 	if ( text == "show high" ) then
-		DynamicConfig.Show( "high" ) 	
+		DynamicConfig.Show("high")
 		return
 	end
 
 	if ( text == "show low" ) then
-		DynamicConfig.Show( "low" )
+		DynamicConfig.Show("low")
 		return
 	end
 	
@@ -285,13 +335,12 @@ function DynamicConfig.SlashCommands( text )
 		DynamicConfig.ShowAll()
 		return
 	end
-
 end
 
 function DYNUP()
-    DynamicConfig.Apply("high")
+    DynamicConfig.Apply("high", true)
 end
 
 function DYNDOWN()
-    DynamicConfig.Apply("low")
+    DynamicConfig.Apply("low", true)
 end

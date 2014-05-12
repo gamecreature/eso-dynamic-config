@@ -32,170 +32,91 @@ function DynamicConfig.SetupSettingsMenu()
 	end, function(val)
 		DynamicConfig.settings.debugOutput = val
 	end) -- Enable Debug output
-	--LAM:AddCheckbox(menus[PanelName].ID, "DynamicConfigEnableAdditionalVarsBox", "Enable Additional Variables", nil, function() return DynamicConfig.settings.AdditionalVars; end, function(val) DynamicConfig.settings.AdditionalVars = val; DynamicConfig.SetDynamicVars(); end)
 	
-
 	LAM:AddSlider(menus[PanelName].ID, "DynamicConfigSwitchBackTime", "Switchback Timeout", "How long to wait (in ms) before switing back to high", 0, 10000, 250, function()
 		return DynamicConfig.settings.switchBackTime
 	end, function(val)
 		DynamicConfig.settings.switchBackTime = val
 	end)
-		
-
-
+	
 	menus[PanelName].SubID = LAM:AddSubMenu(menus[PanelName].ID, "DynamicConfigSubMenu", "Choose Variables to modify", "Only change these if you know what you're doing!") -- Add Submenu for the advanced users to set what variables to modify
 	
 	if DynamicConfig.settings.vars == nil then
 		DynamicConfig.settings.vars = {
-			SUB_SAMPLING = true,
+			--ALPHA = false, -- Should probably never be used
 			AMBIENT_OCCLUSION = true,
+            --ANAGLYPH = false, -- No idea what it's for
 			ANTI_ALIASING_v2 = true,
+			--ANTI_ALIASING = false, -- probably a duplicate of the above?
 			BLOOM = true,
-			PARTICLE_DENSITY = true,
-			VIEW_DISTANCE = true,
-			CLUTTER_2D = true,		-- This is grass :)
-			SHADOWS = false,
-			HIGH_RESOLUTION_SHADOWS = false,
-			REFLECTION_QUALITY_v3 = false,
-			LENS_FLARE = false,
-			GOD_RAYS_v2 = false,
-			MAX_ANISOTROPY = false,
-			DIFFUSE_2_MAPS = false,
+			--CHARACTER_LIGHTING = false, -- Ni idea what it's for
+			CLUTTER_2D = true, -- This is grass
+			--COLOR_CORRECTION = false,
+			--COLOR_GRADING = false,
+			--COLOR_PICKER = false,
+			--CUBE_LIGHTING = false,
+			--DEPTH_OF_FIELD = false,
 			DETAIL_MAPS = false,
-			NORMAL_MAPS = false,
-			SPECULAR_MAPS =  false,
+			DIFFUSE_2_MAPS = false,
+			--DIFFUSE_MAPS = false,
 			DISTORTION = false,
-			WATER_FOAM = false,
+			--DQ_SKINNING = false,
+			--DRAW_BAD_FIXTURES = false,
+			--FADER = false,
+			--FOG = false,
+			--FRESNEL = false,
+			--FULLSCREEN = false, -- This one is most likely useless seeing as it'll  require a reload, and why would you want to change this while in combat?!
+			--GAMMA_ADJUSTMENT = false, -- Probably pointless
+			--GLOW = false,
+			GOD_RAYS_v2 = false,
+			--GOD_RAYS = false, -- Probably a duplicate of the above?
+			--GRAPHICS_DEBUG_VIEW = false,
+			--GRAY_DIFFUSE = false,
+			HIGH_RESOLUTION_SHADOWS = false,
+			LENS_FLARE = false,
+			MAX_ANISOTROPY = false,
 			MIP_LOAD_SKIP_LEVELS = false,
-			RAIN_WETNESS = false
+			--NO_CHARACTER_ATLAS = false,
+			NORMAL_MAPS = false,
+			--OCCLUSION_QUERIES = false,
+			PARTICLE_DENSITY = true,
+			--POINT_SAMPLING = false,
+			--POST_PROCESS_PANELS = false,
+			--PRESETS = false, -- probably useless?
+			RAIN_WETNESS = false,
+			REFLECTION_QUALITY_v3 = false,	
+			--REFLECTION_QUALITY = false, -- Probably a duplicate of the above?
+			--RESOLUTION = false, -- Probably pointless, why would you want to change the resolution while in combat?! this also probably requires a reload...
+			--SCREEN_PERCENTAGE = false, -- probably useless
+			SHADOWS = false,
+			--SHOW_ART_METRICS = false,
+			--SIMPLE_SHADERS = false,
+			--SKINNING = false,
+			--SOFT_ALPHA = false,
+			SPECULAR_MAPS =  false,
+			SUB_SAMPLING = true,
+			--SUN_LIGHTING = false,
+			--TEXTURE_POOLING = false,
+			--TINT_MAPS = false,
+			--VERTEX_COLORS = false,
+			VIEW_DISTANCE = true,
+			--VIEW_SHADER_CHANNEL = false,
+			--VSYNC = false,
+			WATER_FOAM = false,
+			--WATERMARK = false,
+			--WEAPONS_IN_ATLAS = false,
+			--WIREFRAME = false,
+			--Z_PREPASS = false,
 		}
 	end	
 	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigSUB_SAMPLINGBox", "SUB_SAMPLING", nil, function()
-		return DynamicConfig.settings.vars.SUB_SAMPLING
-	end, function(val)
-		DynamicConfig.settings.vars.SUB_SAMPLING = val
-	end) -- Enable SUB_SAMPLING
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigAMBIENT_OCCLUSIONBox", "AMBIENT_OCCLUSION", nil, function()
-		return DynamicConfig.settings.vars.AMBIENT_OCCLUSION
-	end, function(val)
-		DynamicConfig.settings.vars.AMBIENT_OCCLUSION = val
-	end) -- Enable AMBIENT_OCCLUSION
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigANTI_ALIASING_v2Box", "ANTI_ALIASING_v2", nil, function()
-		return DynamicConfig.settings.vars.ANTI_ALIASING_v2
-	end, function(val)
-		DynamicConfig.settings.vars.ANTI_ALIASING_v2 = val
-	end) -- Enable ANTI_ALIASING_v2
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigBLOOMBox", "BLOOM", nil, function()
-		return DynamicConfig.settings.vars.BLOOM
-	end, function(val)
-		DynamicConfig.settings.vars.BLOOM = val
-	end) -- Enable BLOOM	
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigPARTICLE_DENSITYBox", "PARTICLE_DENSITY", nil, function()
-		return DynamicConfig.settings.vars.PARTICLE_DENSITY
-	end, function(val)
-		DynamicConfig.settings.vars.PARTICLE_DENSITY = val
-	end) -- Enable PARTICLE_DENSITY
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigVIEW_DISTANCEBox", "VIEW_DISTANCE", nil, function()
-		return DynamicConfig.settings.vars.VIEW_DISTANCE
-	end, function(val)
-		DynamicConfig.settings.vars.VIEW_DISTANCE = val
-	end) -- Enable VIEW_DISTANCE
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigCLUTTER_2DBox", "CLUTTER_2D", nil, function() 
-		return DynamicConfig.settings.vars.CLUTTER_2D
-	end, function(val)
-		DynamicConfig.settings.vars.CLUTTER_2D = val
-	end) -- Enable CLUTTER_2D (grass)
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigSHADOWSBox", "SHADOWS", nil, function()
-		return DynamicConfig.settings.vars.SHADOWS
-	end, function(val)
-		DynamicConfig.settings.vars.SHADOWS = val
-	end) -- Enable SHADOWS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigHIGH_RESOLUTION_SHADOWSBox", "HIGH_RESOLUTION_SHADOWS", nil, function()
-		return DynamicConfig.settings.vars.HIGH_RESOLUTION_SHADOWS
-	end, function(val)
-		DynamicConfig.settings.vars.HIGH_RESOLUTION_SHADOWS = val
-	end) -- Enable HIGH_RESOLUTION_SHADOWS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigREFLECTION_QUALITY_v3Box", "REFLECTION_QUALITY_v3", nil, function()
-		return DynamicConfig.settings.vars.REFLECTION_QUALITY_v3
-	end, function(val) 
-		DynamicConfig.settings.vars.REFLECTION_QUALITY_v3 = val
-	end) -- Enable REFLECTION_QUALITY_v3
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigLENS_FLAREBox", "LENS_FLARE", nil, function()
-		return DynamicConfig.settings.vars.LENS_FLARE
-	end, function(val)
-		DynamicConfig.settings.vars.LENS_FLARE = val
-	end) -- Enable LENS_FLARE
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigGOD_RAYS_v2Box", "GOD_RAYS_v2", nil, function()
-		return DynamicConfig.settings.vars.GOD_RAYS_v2
-	end, function(val)
-		DynamicConfig.settings.vars.GOD_RAYS_v2 = val
-	end) -- Enable GOD_RAYS_v2
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigMAX_ANISOTROPYBox", "MAX_ANISOTROPY", nil, function()
-		return DynamicConfig.settings.vars.MAX_ANISOTROPY
-	end, function(val) 
-		DynamicConfig.settings.vars.MAX_ANISOTROPY = val
-	end) -- Enable MAX_ANISOTROPY
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigDIFFUSE_2_MAPSBox", "DIFFUSE_2_MAPS", nil, function() 
-		return DynamicConfig.settings.vars.DIFFUSE_2_MAPS
-	end, function(val)
-		DynamicConfig.settings.vars.DIFFUSE_2_MAPS = val
-	end) -- Enable DIFFUSE_2_MAPS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigDETAIL_MAPSBox", "DETAIL_MAPS", nil, function()
-		return DynamicConfig.settings.vars.DETAIL_MAPS
-	end, function(val) 
-		DynamicConfig.settings.vars.DETAIL_MAPS = val
-	end) -- Enable DETAIL_MAPS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigNORMAL_MAPSBox", "NORMAL_MAPS", nil, function()
-		return DynamicConfig.settings.vars.NORMAL_MAPS
-	end, function(val)
-		DynamicConfig.settings.vars.NORMAL_MAPS = val
-	end) -- Enable NORMAL_MAPS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigSPECULAR_MAPSBox", "SPECULAR_MAPS", nil, function()
-		return DynamicConfig.settings.vars.SPECULAR_MAPS
-	end, function(val) 
-		DynamicConfig.settings.vars.SPECULAR_MAPS = val
-	end) -- Enable SPECULAR_MAPS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigDISTORTIONBox", "DISTORTION", nil, function()
-		return DynamicConfig.settings.vars.DISTORTION
-	end, function(val)
-		DynamicConfig.settings.vars.DISTORTION = val
-	end) -- Enable DISTORTION
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigWATER_FOAMBox", "WATER_FOAM", nil, function()
-		return DynamicConfig.settings.vars.WATER_FOAM
-	end, function(val)
-		DynamicConfig.settings.vars.WATER_FOAM = val
-	end) -- Enable WATER_FOAM
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigMIP_LOAD_SKIP_LEVELSBox", "MIP_LOAD_SKIP_LEVELS", nil, function()
-		return DynamicConfig.settings.vars.MIP_LOAD_SKIP_LEVELS
-	end, function(val)
-		DynamicConfig.settings.vars.MIP_LOAD_SKIP_LEVELS = val
-	end) -- Enable MIP_LOAD_SKIP_LEVELS
-	
-	LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfigRAIN_WETNESSBox", "RAIN_WETNESS", nil, function()
-		return DynamicConfig.settings.vars.RAIN_WETNESS
-	end, function(val) 
-		DynamicConfig.settings.vars.RAIN_WETNESS = val
-	end) -- Enable RAIN_WETNESS
+	for name, v in pairs(DynamicConfig.settings.vars) do
+		LAM:AddCheckbox(menus[PanelName].SubID, "DynamicConfig"..name.."Box", name, nil, function()
+			return DynamicConfig.settings.vars[name]
+		end, function(val)
+			DynamicConfig.settings.vars[name] = val
+		end)			
+	end	
 	
 	LAM:AddButton(menus[PanelName].ID, "DynamicConfigSaveHighBtn", "Save current as High", nil, function()
 		DynamicConfig.Save("high")
