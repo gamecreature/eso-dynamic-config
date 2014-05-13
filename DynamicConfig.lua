@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.9"
+DynamicConfig.versionString = "v1.0.10"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 DynamicConfig.highCallCount = 0
@@ -92,17 +92,7 @@ DynamicConfig.defaultSettings = {
 		BLOOM = 1,
 		PARTICLE_DENSITY = 2,
 		VIEW_DISTANCE = 1.0,
-		CLUTTER_2D = 1		-- This is grass :)
-		-- SHADOWS = 1,
-		-- HIGH_RESOLUTION_SHADOWS = 1,
-		-- REFLECTION_QUALITY_v3 = 1,
-		-- LENS_FLARE = 1,
-		-- GOD_RAYS_v2 = 1,
-		-- MAX_ANISOTROPY = 2
-		-- DIFFUSE_2_MAPS = 1,
-		-- DETAIL_MAPS = 1,
-		-- NORMAL_MAPS = 1,
-		-- SPECULAR_MAPS=  1
+		CLUTTER_2D = 1
 	},
 	low = {
 		SUB_SAMPLING = 0,
@@ -111,22 +101,13 @@ DynamicConfig.defaultSettings = {
 		BLOOM = 0,
 		PARTICLE_DENSITY = 0,
 		VIEW_DISTANCE = 0.7,
-		CLUTTER_2D = 0		-- This is grass :)
-		-- SHADOWS = 0,
-		-- HIGH_RESOLUTION_SHADOWS = 0,
-		-- REFLECTION_QUALITY_v3 = 0,
-		-- LENS_FLARE = 0,
-		-- GOD_RAYS_v2 = 0,
-		-- MAX_ANISOTROPY = 0
-		-- DIFFUSE_2_MAPS = 0,
-		-- DETAIL_MAPS = 0,
-		-- NORMAL_MAPS = 0,
-		-- SPECULAR_MAPS = 0
+		CLUTTER_2D = 0
 	},
 	auto = true,
 	enableOutput = true,
 	debugOutput = false,
-	switchBackTime = 2000    -- wait two seconds to switch back
+	switchBackTime = 2000,    -- wait two seconds to switch back
+	SystemID = 5 -- Default to SystemID 5 (works for Swizzy)
 }
 
 --[[==========================================
@@ -143,6 +124,10 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	SLASH_COMMANDS[DynamicConfig.command] = DynamicConfig.SlashCommands;
 	
 	DynamicConfig.settings = ZO_SavedVars:NewAccountWide( "DynamicConfig_SavedVariables" , DynamicConfig.versionSettings, nil, DynamicConfig.defaultSettings, nil );
+	
+	if (DynamicConfig.settings.SystemID == nil) then
+		DynamicConfig.settings.SystemID = 5
+	end
 	
 	DynamicConfig.SetupSettingsMenu()
 end
@@ -198,7 +183,7 @@ function DynamicConfig.Save( mode )
 	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
 			--local val = GetCVar(name)
-			local val = GetSetting(5, DynamicConfig.Constants[name])
+			local val = GetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name])
 			DynamicConfig.settings[mode][name] = val
 			if DynamicConfig.settings.debugOutput then
 				d("-"..name.."="..val)
@@ -228,7 +213,7 @@ function DynamicConfig.Apply(mode, override)
 			local val = DynamicConfig.settings[mode][name]			
 			if val ~= nil then
 				--SetCVar(name , val)
-				SetSetting(5, DynamicConfig.Constants[name], val)
+				SetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name], val)
 			end
 		end
 	end
@@ -261,7 +246,7 @@ function DynamicConfig.showCur()
 	CHAT_SYSTEM:AddMessage("-----------------------")
 	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
-			local val = GetSetting(5, DynamicConfig.Constants[name])
+			local val = GetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name])
 			if (val ~= nil) then
 				CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. val )
 			end
