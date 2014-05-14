@@ -103,11 +103,13 @@ DynamicConfig.defaultSettings = {
 		VIEW_DISTANCE = 0.7,
 		CLUTTER_2D = 0
 	},
-	auto = true,
-	enableOutput = true,
-	debugOutput = false,
+	auto = true, -- Enable auto combat
+	enableOutput = true, -- Enable output
+	debugOutput = false, -- Disable Debug Output
+	RefreshApply = true, -- Refresh and Apply settings upon changing mode
 	switchBackTime = 2000,    -- wait two seconds to switch back
 	SystemID = 5 -- Default to SystemID 5 (works for Swizzy)
+	
 }
 
 --[[==========================================
@@ -217,8 +219,10 @@ function DynamicConfig.Apply(mode, override)
 			end
 		end
 	end
-	RefreshSettings()
-	ApplySettings()
+	if DynamicConfig.settings.RefreshApply then
+		RefreshSettings()
+		ApplySettings()
+	end
 end
 
 --[[==========================================
