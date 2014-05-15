@@ -99,17 +99,14 @@ GRAY_DIFFUSE
 HIGH_RESOLUTION_SHADOWS
 LENS_FLARE
 MAX_ANISOTROPY
-MIP_LOAD_SKIP_LEVELS
 NO_CHARACTER_ATLAS
 NORMAL_MAPS
 OCCLUSION_QUERIES
 POINT_SAMPLING
 POST_PROCESS_PANELS
 RAIN_WETNESS
-REFLECTION_QUALITY_v3
 RESOLUTION
 SCREEN_PERCENTAGE
-SHADOWS
 SHOW_ART_METRICS
 SIMPLE_SHADERS
 SKINNING
@@ -130,6 +127,14 @@ Z_PREPASS
 
 
 ## Histoy
+
+v1.1.0
+* Added a setting to disable the RefreshSettings and ApplySettings function calls (they may cause the UI scale to change for some users)
+* Added buttons to enable/disable all variables aswell as reset defaults
+* Added the ability to manually configure each variable (live editing!)
+* Added slash command to toggle auto combat on/off (auto on and auto off)
+* Added keybinding to toggle auto combat on/off (a single button to toggle it on or off, a message will be displayed as to which state it's changed to)
+* Deleted the settings which require a UI reload to not cause problems (they're now available as manual option settings instead, keep in mind there might be more that we haven't tested yet)
 
 v1.0.10
 * Enabled more variables for you to experiment with

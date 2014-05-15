@@ -1,6 +1,9 @@
 <Bindings>
 	<Layer name="General">
 		<Category name="DYNConfig">
+			<Action name="DYN_AUTO">
+				<Down>DYNAUTO()</Down>
+			</Action>
 			<Action name="DYN_UP">
 				<Down>DYNUP()</Down>
 			</Action>

@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.10"
+DynamicConfig.versionString = "v1.1.0"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 DynamicConfig.highCallCount = 0
@@ -83,6 +83,7 @@ DynamicConfig.Constants = {
 
 ZO_CreateStringId("SI_BINDING_NAME_DYN_UP", "DYN UP")
 ZO_CreateStringId("SI_BINDING_NAME_DYN_DOWN", "DYN DOWN")
+ZO_CreateStringId("SI_BINDING_NAME_DYN_AUTO", "DYN AUTO")
 
 DynamicConfig.defaultSettings = {
 	high = {
@@ -130,8 +131,7 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	if (DynamicConfig.settings.SystemID == nil) then
 		DynamicConfig.settings.SystemID = 5
 	end
-	
-	DynamicConfig.SetupSettingsMenu()
+	zo_callLater(DynamicConfig.SetupSettingsMenu, 1000)
 end
 
 -- Hook initialization onto the ADD_ON_LOADED event
@@ -183,14 +183,14 @@ function DynamicConfig.Save( mode )
 		d("---------------------------")
 	end
 	for name, v in pairs(DynamicConfig.settings.vars) do
-		if v then
+		--if v then
 			--local val = GetCVar(name)
 			local val = GetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name])
 			DynamicConfig.settings[mode][name] = val
 			if DynamicConfig.settings.debugOutput then
 				d("-"..name.."="..val)
 			end
-		end
+		--end
 	end	
 end
 
@@ -276,12 +276,15 @@ function DynamicConfig.SlashCommands( text )
 		CHAT_SYSTEM:AddMessage( "Command line options: /dynconf [command] " )		
 		CHAT_SYSTEM:AddMessage( "/dynconf save high  (save the current settings as high quality settings)" )
 		CHAT_SYSTEM:AddMessage( "/dynconf save low   (save the current settings as low quality settings)" )
-		CHAT_SYSTEM:AddMessage( "/dynconf show high  (shows the high settings)" )
-		CHAT_SYSTEM:AddMessage( "/dynconf show low   (shows the low settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show high  (shows the high quality settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show low   (shows the low quality settings)" )
 		CHAT_SYSTEM:AddMessage( "/dynconf show cur   (shows the current settings)" )
 		CHAT_SYSTEM:AddMessage( "/dynconf show       (shows all settings)" )
-		CHAT_SYSTEM:AddMessage( "/dynconf up         " )
+		CHAT_SYSTEM:AddMessage( "/dynconf auto on    (Enables auto combat tracker" )
+		CHAT_SYSTEM:AddMessage( "/dynconf auto off   (Disables auto combat tracker")
+		CHAT_SYSTEM:AddMessage( "/dynconf up " )
 		CHAT_SYSTEM:AddMessage( "/dynconf down " )
+		
 		return
 	end
 
@@ -324,6 +327,16 @@ function DynamicConfig.SlashCommands( text )
 		DynamicConfig.ShowAll()
 		return
 	end
+	
+	if ( text == "auto off" ) then
+		DynamicConfig.settings.auto = false
+		return
+	end
+	
+	if ( text == "auto on" ) then
+		DynamicConfig.settings.auto = true
+		return
+	end
 end
 
 function DYNUP()
@@ -332,4 +345,18 @@ end
 
 function DYNDOWN()
     DynamicConfig.Apply("low", true)
+end
+
+function DYNAUTO()
+    if DynamicConfig.settings.auto then
+		DynamicConfig.settings.auto = false
+		if DynamicConfig.settings.enableOutput then
+			CHAT_SYSTEM:AddMessage("Auto combat tracker is now disabled!")
+		end
+	else
+		DynamicConfig.settings.auto = true
+		if DynamicConfig.settings.enableOutput then
+			CHAT_SYSTEM:AddMessage("Auto combat tracker is now enabled!")
+		end
+	end
 end
