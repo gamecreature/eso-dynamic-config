@@ -50,6 +50,8 @@ Warning commands are space and case sensitive! (so type it exactly)
 /dynconf show cur   : shows the current game settings
 /dynconf high       : activates the high settings
 /dynconf low        : activates the low settings
+/dynconf auto on	: enables auto combat tracker
+/dynconf auto off	: disables auto combat tracker
 ```
 
 
