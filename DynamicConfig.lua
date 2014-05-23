@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.0.9"
+DynamicConfig.versionString = "v1.1.1"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 DynamicConfig.highCallCount = 0
@@ -83,6 +83,7 @@ DynamicConfig.Constants = {
 
 ZO_CreateStringId("SI_BINDING_NAME_DYN_UP", "DYN UP")
 ZO_CreateStringId("SI_BINDING_NAME_DYN_DOWN", "DYN DOWN")
+ZO_CreateStringId("SI_BINDING_NAME_DYN_AUTO", "DYN AUTO")
 
 DynamicConfig.defaultSettings = {
 	high = {
@@ -92,17 +93,7 @@ DynamicConfig.defaultSettings = {
 		BLOOM = 1,
 		PARTICLE_DENSITY = 2,
 		VIEW_DISTANCE = 1.0,
-		CLUTTER_2D = 1		-- This is grass :)
-		-- SHADOWS = 1,
-		-- HIGH_RESOLUTION_SHADOWS = 1,
-		-- REFLECTION_QUALITY_v3 = 1,
-		-- LENS_FLARE = 1,
-		-- GOD_RAYS_v2 = 1,
-		-- MAX_ANISOTROPY = 2
-		-- DIFFUSE_2_MAPS = 1,
-		-- DETAIL_MAPS = 1,
-		-- NORMAL_MAPS = 1,
-		-- SPECULAR_MAPS=  1
+		CLUTTER_2D = 1
 	},
 	low = {
 		SUB_SAMPLING = 0,
@@ -111,22 +102,15 @@ DynamicConfig.defaultSettings = {
 		BLOOM = 0,
 		PARTICLE_DENSITY = 0,
 		VIEW_DISTANCE = 0.7,
-		CLUTTER_2D = 0		-- This is grass :)
-		-- SHADOWS = 0,
-		-- HIGH_RESOLUTION_SHADOWS = 0,
-		-- REFLECTION_QUALITY_v3 = 0,
-		-- LENS_FLARE = 0,
-		-- GOD_RAYS_v2 = 0,
-		-- MAX_ANISOTROPY = 0
-		-- DIFFUSE_2_MAPS = 0,
-		-- DETAIL_MAPS = 0,
-		-- NORMAL_MAPS = 0,
-		-- SPECULAR_MAPS = 0
+		CLUTTER_2D = 0
 	},
-	auto = true,
-	enableOutput = true,
-	debugOutput = false,
-	switchBackTime = 2000    -- wait two seconds to switch back
+	auto = true, -- Enable auto combat
+	enableOutput = true, -- Enable output
+	debugOutput = false, -- Disable Debug Output
+	RefreshApply = true, -- Refresh and Apply settings upon changing mode
+	switchBackTime = 2000,    -- wait two seconds to switch back
+	SystemID = 5 -- Default to SystemID 5 (works for Swizzy)
+	
 }
 
 --[[==========================================
@@ -144,7 +128,10 @@ function DynamicConfig.Initialize( eventCode, addOnName )
 	
 	DynamicConfig.settings = ZO_SavedVars:NewAccountWide( "DynamicConfig_SavedVariables" , DynamicConfig.versionSettings, nil, DynamicConfig.defaultSettings, nil );
 	
-	DynamicConfig.SetupSettingsMenu()
+	if (DynamicConfig.settings.SystemID == nil) then
+		DynamicConfig.settings.SystemID = 5
+	end
+	zo_callLater(DynamicConfig.SetupSettingsMenu, 1000)
 end
 
 -- Hook initialization onto the ADD_ON_LOADED event
@@ -196,14 +183,14 @@ function DynamicConfig.Save( mode )
 		d("---------------------------")
 	end
 	for name, v in pairs(DynamicConfig.settings.vars) do
-		if v then
+		--if v then
 			--local val = GetCVar(name)
-			local val = GetSetting(5, DynamicConfig.Constants[name])
+			local val = GetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name])
 			DynamicConfig.settings[mode][name] = val
 			if DynamicConfig.settings.debugOutput then
 				d("-"..name.."="..val)
 			end
-		end
+		--end
 	end	
 end
 
@@ -228,12 +215,14 @@ function DynamicConfig.Apply(mode, override)
 			local val = DynamicConfig.settings[mode][name]			
 			if val ~= nil then
 				--SetCVar(name , val)
-				SetSetting(5, DynamicConfig.Constants[name], val)
+				SetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name], val)
 			end
 		end
 	end
-	RefreshSettings()
-	ApplySettings()
+	if DynamicConfig.settings.RefreshApply then
+		RefreshSettings()
+		ApplySettings()
+	end
 end
 
 --[[==========================================
@@ -261,7 +250,7 @@ function DynamicConfig.showCur()
 	CHAT_SYSTEM:AddMessage("-----------------------")
 	for name, v in pairs(DynamicConfig.settings.vars) do
 		if v then
-			local val = GetSetting(5, DynamicConfig.Constants[name])
+			local val = GetSetting(DynamicConfig.settings.SystemID, DynamicConfig.Constants[name])
 			if (val ~= nil) then
 				CHAT_SYSTEM:AddMessage( "-"..name .. " = " .. val )
 			end
@@ -287,12 +276,15 @@ function DynamicConfig.SlashCommands( text )
 		CHAT_SYSTEM:AddMessage( "Command line options: /dynconf [command] " )		
 		CHAT_SYSTEM:AddMessage( "/dynconf save high  (save the current settings as high quality settings)" )
 		CHAT_SYSTEM:AddMessage( "/dynconf save low   (save the current settings as low quality settings)" )
-		CHAT_SYSTEM:AddMessage( "/dynconf show high  (shows the high settings)" )
-		CHAT_SYSTEM:AddMessage( "/dynconf show low   (shows the low settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show high  (shows the high quality settings)" )
+		CHAT_SYSTEM:AddMessage( "/dynconf show low   (shows the low quality settings)" )
 		CHAT_SYSTEM:AddMessage( "/dynconf show cur   (shows the current settings)" )
 		CHAT_SYSTEM:AddMessage( "/dynconf show       (shows all settings)" )
-		CHAT_SYSTEM:AddMessage( "/dynconf up         " )
+		CHAT_SYSTEM:AddMessage( "/dynconf auto on    (Enables auto combat tracker" )
+		CHAT_SYSTEM:AddMessage( "/dynconf auto off   (Disables auto combat tracker")
+		CHAT_SYSTEM:AddMessage( "/dynconf up " )
 		CHAT_SYSTEM:AddMessage( "/dynconf down " )
+		
 		return
 	end
 
@@ -335,6 +327,16 @@ function DynamicConfig.SlashCommands( text )
 		DynamicConfig.ShowAll()
 		return
 	end
+	
+	if ( text == "auto off" ) then
+		DynamicConfig.settings.auto = false
+		return
+	end
+	
+	if ( text == "auto on" ) then
+		DynamicConfig.settings.auto = true
+		return
+	end
 end
 
 function DYNUP()
@@ -343,4 +345,18 @@ end
 
 function DYNDOWN()
     DynamicConfig.Apply("low", true)
+end
+
+function DYNAUTO()
+    if DynamicConfig.settings.auto then
+		DynamicConfig.settings.auto = false
+		if DynamicConfig.settings.enableOutput then
+			CHAT_SYSTEM:AddMessage("Auto combat tracker is now disabled!")
+		end
+	else
+		DynamicConfig.settings.auto = true
+		if DynamicConfig.settings.enableOutput then
+			CHAT_SYSTEM:AddMessage("Auto combat tracker is now enabled!")
+		end
+	end
 end

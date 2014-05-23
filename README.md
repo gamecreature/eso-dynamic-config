@@ -50,6 +50,8 @@ Warning commands are space and case sensitive! (so type it exactly)
 /dynconf show cur   : shows the current game settings
 /dynconf high       : activates the high settings
 /dynconf low        : activates the low settings
+/dynconf auto on	: enables auto combat tracker
+/dynconf auto off	: disables auto combat tracker
 ```
 
 
@@ -73,24 +75,74 @@ CLUTTER_2D
 The following additional settings can be stored using the settings for them:
 
 ```
-SHADOWS
-HIGH_RESOLUTION_SHADOWS
-REFLECTION_QUALITY_v3
-LENS_FLARE
-GOD_RAYS_v2
-MAX_ANISOTROPY
-DIFFUSE_2_MAPS
+ALPHA
+ANAGLYPH
+CHARACTER_LIGHTING
+COLOR_CORRECTION
+COLOR_GRADING
+COLOR_PICKER
+CUBE_LIGHTING
+DEPTH_OF_FIELD
 DETAIL_MAPS
-NORMAL_MAPS
-SPECULAR_MAPS
+DIFFUSE_2_MAPS
+DIFFUSE_MAPS
 DISTORTION
-WATER_FOAM
-MIP_LOAD_SKIP_LEVELS
+DQ_SKINNING
+DRAW_BAD_FIXTURES
+FADER
+FOG
+FRESNEL
+FULLSCREEN
+GAMMA_ADJUSTMENT
+GLOW
+GOD_RAYS_v2
+GRAPHICS_DEBUG_VIEW
+GRAY_DIFFUSE
+HIGH_RESOLUTION_SHADOWS
+LENS_FLARE
+MAX_ANISOTROPY
+NO_CHARACTER_ATLAS
+NORMAL_MAPS
+OCCLUSION_QUERIES
+POINT_SAMPLING
+POST_PROCESS_PANELS
 RAIN_WETNESS
+RESOLUTION
+SCREEN_PERCENTAGE
+SHOW_ART_METRICS
+SIMPLE_SHADERS
+SKINNING
+SOFT_ALPHA
+SPECULAR_MAPS
+SUN_LIGHTING
+TEXTURE_POOLING
+TINT_MAPS
+VERTEX_COLORS
+VIEW_SHADER_CHANNEL
+VSYNC
+WATER_FOAM
+WATERMARK
+WEAPONS_IN_ATLAS
+WIREFRAME
+Z_PREPASS
 ```
 
 
 ## Histoy
+v1.1.1
+* Updated to the new API version
+
+v1.1.0
+* Added a setting to disable the RefreshSettings and ApplySettings function calls (they may cause the UI scale to change for some users)
+* Added buttons to enable/disable all variables aswell as reset defaults
+* Added the ability to manually configure each variable (live editing!)
+* Added slash command to toggle auto combat on/off (auto on and auto off)
+* Added keybinding to toggle auto combat on/off (a single button to toggle it on or off, a message will be displayed as to which state it's changed to)
+* Deleted the settings which require a UI reload to not cause problems (they're now available as manual option settings instead, keep in mind there might be more that we haven't tested yet)
+
+v1.0.10
+* Enabled more variables for you to experiment with
+* Added a slider for SystemID, only change it if the addon appears to not be changing anything... the default value is 5...
 
 v1.0.9
 * Fixed a crash for new users when wanting to show current settings
