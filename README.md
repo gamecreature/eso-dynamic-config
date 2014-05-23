@@ -129,6 +129,8 @@ Z_PREPASS
 
 
 ## Histoy
+v1.1.1
+* Updated to the new API version
 
 v1.1.0
 * Added a setting to disable the RefreshSettings and ApplySettings function calls (they may cause the UI scale to change for some users)
