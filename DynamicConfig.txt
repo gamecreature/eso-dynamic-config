@@ -1,6 +1,7 @@
-## Title: DynamicConfig v1.1.1
-## APIVersion: 100004
+## Title: DynamicConfig v1.2.0
+## APIVersion: 100007
 ## SavedVariables: DynamicConfig_SavedVariables
+## Author: Gamecreature, Swizzy
 ## Version: 1.1.1
 ## OptionalDependsOn: LibAddonMenu-1.0
 
