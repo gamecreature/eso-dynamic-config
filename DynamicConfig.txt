@@ -2,7 +2,7 @@
 ## APIVersion: 100007
 ## SavedVariables: DynamicConfig_SavedVariables
 ## Author: Gamecreature, Swizzy
-## Version: 1.1.1
+## Version: 1.2.0
 ## OptionalDependsOn: LibAddonMenu-1.0
 
 LibStub/LibStub.lua
