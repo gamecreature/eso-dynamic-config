@@ -1,8 +1,8 @@
-## Title: DynamicConfig v1.2.0
-## APIVersion: 100007
+## Title: DynamicConfig v1.2.1
+## APIVersion: 100009
 ## SavedVariables: DynamicConfig_SavedVariables
 ## Author: Gamecreature, Swizzy
-## Version: 1.2.0
+## Version: 1.2.1
 ## OptionalDependsOn: LibAddonMenu-1.0
 
 LibStub/LibStub.lua
