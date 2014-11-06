@@ -129,7 +129,11 @@ Z_PREPASS
 
 
 ## Histoy
-v1.1.1
+v1.3.0
+* Update to the new API version (Update 5)
+* Switched to LibAddonMenu-2.0 
+
+v1.2.1
 * Updated to the new API version
 
 v1.1.0

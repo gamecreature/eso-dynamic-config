@@ -8,7 +8,7 @@
 DynamicConfig = {}
 DynamicConfig.name = "DynamicConfig"
 DynamicConfig.command = "/dynconf"
-DynamicConfig.versionString = "v1.2.1"
+DynamicConfig.versionString = "v1.3.0"
 DynamicConfig.versionSettings = 2
 DynamicConfig.versionBuild = 0
 DynamicConfig.highCallCount = 0
@@ -166,7 +166,7 @@ end
 	==========================================]]--
 function DynamicConfig.ApplyHigh()
 	if DynamicConfig.settings.debugOutput then
-		d("high call "..DynamicConfig.highCallCounWt)
+		d("high call "..DynamicConfig.highCallCount)
 	end
 	DynamicConfig.highCallCount = DynamicConfig.highCallCount - 1
 	if DynamicConfig.highCallCount == 0 and not DynamicConfig.combatState then
